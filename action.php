@@ -163,15 +163,19 @@ if (isset($_GET['action'])) {
         $return = $mysql->deleteUser($id);
         echo $return;
     } else if ($action == 'deleteadmin') { //删除一个管理员
-        $sql = "select * from admin";
-        $rst = $mysql->query($sql);
-        $num = mysqli_num_rows($rst);
-        if ($num == 1) {
-            echo "onlyone";
+        $id = $_POST['id'];
+        if ($_SESSION['admin_id'] == $id) {
+            echo "isme";
         } else {
-            $id = $_POST['id'];
-            $return = $mysql->deleteAdmin($id);
-            echo $return;
+            $sql = "select * from admin";
+            $rst = $mysql->query($sql);
+            $num = mysqli_num_rows($rst);
+            if ($num == 1) {
+                echo "onlyone";
+            } else {
+                $return = $mysql->deleteAdmin($id);
+                echo $return;
+            }
         }
     }
     
