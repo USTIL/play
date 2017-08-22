@@ -166,7 +166,7 @@ layui.use('element', function(){
 			});
 	}
 	function adminexit() {
-		$.post('action?action=adminexit', {
+		$.post('action.php?action=adminexit', {
 			
 		}, function(data) {
 			if (data == 'success') {
@@ -209,7 +209,7 @@ layui.use('element', function(){
 		  form.on('submit(submit1)', function(data){
 			  var mdata = JSON.stringify(data.field);
 			  var medata = JSON.parse(mdata);
-			$.post('action?action=sh', {
+			$.post('action.php?action=sh', {
 				id: medata.id,
 				place: medata.place
 			}, function(data) {
@@ -251,7 +251,7 @@ layui.use('element', function(){
 		  form.on('submit(submit2)', function(data){
 			  var mdata = JSON.stringify(data.field);
 			  var medata = JSON.parse(mdata);
-			$.post('action?action=addplay', {
+			$.post('action.php?action=addplay', {
 				title: medata.title,
 				cont: medata.cont
 			}, function(data) {
@@ -303,7 +303,7 @@ layui.use('element', function(){
 		  form.on('submit(submit3)', function(data){
 			  var mdata = JSON.stringify(data.field);
 			  var medata = JSON.parse(mdata);
-			$.post('action?action=adduser', {
+			$.post('action.php?action=adduser', {
 				username: medata.username,
 				password: medata.password,
 				name: medata.name
@@ -358,7 +358,7 @@ layui.use('element', function(){
 		  form.on('submit(submit4)', function(data){
 			  var mdata = JSON.stringify(data.field);
 			  var medata = JSON.parse(mdata);
-			$.post('action?action=addadmin', {
+			$.post('action.php?action=addadmin', {
 				username: medata.username,
 				password: medata.password,
 				name: medata.name
@@ -402,7 +402,7 @@ layui.use('element', function(){
 		  form.on('submit(submit5)', function(data){
 			  var mdata = JSON.stringify(data.field);
 			  var medata = JSON.parse(mdata);
-			$.post('action?action=editpass', {
+			$.post('action.php?action=editpass', {
 				id: medata.id,
 				password: medata.password,
 			}, function(data) {

@@ -114,7 +114,7 @@ $rows = $mysql->fetchAll($rst);
 			
 			if (layEvent == 'del') { //删除 
 				layer.confirm('确定要删除“'+data.title+'”的获奖信息吗？',{title: '提示'}, function(index){
-					$.post('action?action=deleteaward', {
+					$.post('action.php?action=deleteaward', {
 					id: data.id
 					}, function(data) {
 						if (data == 'success') {
@@ -168,7 +168,7 @@ layui.use('element', function(){
 			});
 	}
 	function adminexit() {
-		$.post('action?action=adminexit', {
+		$.post('action.php?action=adminexit', {
 			
 		}, function(data) {
 			if (data == 'success') {
@@ -217,7 +217,7 @@ layui.use('element', function(){
 		  form.on('submit(submit2)', function(data){
 			  var mdata = JSON.stringify(data.field);
 			  var medata = JSON.parse(mdata);
-			$.post('action?action=addplay', {
+			$.post('action.php?action=addplay', {
 				title: medata.title,
 				cont: medata.cont
 			}, function(data) {
@@ -269,7 +269,7 @@ layui.use('element', function(){
 		  form.on('submit(submit3)', function(data){
 			  var mdata = JSON.stringify(data.field);
 			  var medata = JSON.parse(mdata);
-			$.post('action?action=adduser', {
+			$.post('action.php?action=adduser', {
 				username: medata.username,
 				password: medata.password,
 				name: medata.name
@@ -324,7 +324,7 @@ layui.use('element', function(){
 		  form.on('submit(submit4)', function(data){
 			  var mdata = JSON.stringify(data.field);
 			  var medata = JSON.parse(mdata);
-			$.post('action?action=addadmin', {
+			$.post('action.php?action=addadmin', {
 				username: medata.username,
 				password: medata.password,
 				name: medata.name
@@ -368,7 +368,7 @@ layui.use('element', function(){
 		  form.on('submit(submit5)', function(data){
 			  var mdata = JSON.stringify(data.field);
 			  var medata = JSON.parse(mdata);
-			$.post('action?action=editpass', {
+			$.post('action.php?action=editpass', {
 				id: medata.id,
 				password: medata.password,
 			}, function(data) {

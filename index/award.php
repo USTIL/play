@@ -160,7 +160,7 @@ layui.use(['element','layer'], function(){
 			});
 		}
 		function userexit() {
-			$.post('action?action=userexit', {
+			$.post('action.php?action=userexit', {
 				
 				}, function(data) {
 					if (data == 'success') {
@@ -198,7 +198,7 @@ layui.use(['element','layer'], function(){
 		  form.on('submit(submit1)', function(data){
 			  var mdata = JSON.stringify(data.field);
 			  var medata = JSON.parse(mdata);
-			$.post('action?action=edituser', {
+			$.post('action.php?action=edituser', {
 				id: medata.id,
 				password: medata.password,
 				name: medata.name
@@ -241,7 +241,7 @@ layui.use(['element','layer'], function(){
 		  form.on('submit(submit2)', function(data){
 			  var mdata = JSON.stringify(data.field);
 			  var medata = JSON.parse(mdata);
-			$.post('action?action=userlogin', {
+			$.post('action.php?action=userlogin', {
 				username: medata.username,
 				password: medata.password
 			}, function(data) {
@@ -293,7 +293,7 @@ layui.use(['element','layer'], function(){
 		  form.on('submit(submit3)', function(data){
 			  var mdata = JSON.stringify(data.field);
 			  var medata = JSON.parse(mdata);
-			$.post('action?action=adduser', {
+			$.post('action.php?action=adduser', {
 				username: medata.username,
 				password: medata.password,
 				name: medata.name
@@ -338,7 +338,7 @@ layui.use(['element','layer'], function(){
 		  form.on('submit(submit5)', function(data){
 			  var mdata = JSON.stringify(data.field);
 			  var medata = JSON.parse(mdata);
-			$.post('action?action=addaward', {
+			$.post('action.php?action=addaward', {
 				up_id: medata.upid,
 				user_id: medata.userid,
 				place: medata.place

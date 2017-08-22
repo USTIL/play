@@ -58,7 +58,7 @@ if (is_file('../playconf.php')) {
 		  form.on('submit(submit1)', function(data){
 			  var mdata = JSON.stringify(data.field);
 			  var medata = JSON.parse(mdata);
-			$.post('action?action=adminlogin', {
+			$.post('action.php?action=adminlogin', {
 				username: medata.username,
 				password: medata.password
 			}, function(data) {

@@ -102,7 +102,7 @@ $rows = $mysql->fetchAll($rst);
 		  var tr = obj.tr; //获得当前行 tr 的DOM对象
 			
 			if (layEvent == 'detail') { //查看
-				$.post('action?action=adminaward', {
+				$.post('action.php?action=adminaward', {
 					id: data.id
 					}, function(data) {
 						if (data == 'success') {
@@ -111,7 +111,7 @@ $rows = $mysql->fetchAll($rst);
 					});
 			} else if(layEvent === 'del'){ //删除
 			layer.confirm('删除一个比赛就会删除这个比赛的所有获奖信息，确定要删除比赛“'+data.title+'”吗？',{title: '提示'}, function(index){
-				$.post('action?action=deleteplay', {
+				$.post('action.php?action=deleteplay', {
 				id: data.id
 				}, function(data) {
 					if (data == 'success') {
@@ -175,7 +175,7 @@ layui.use('element', function(){
 			});
 	}
 	function adminexit() {
-		$.post('action?action=adminexit', {
+		$.post('action.php?action=adminexit', {
 			
 		}, function(data) {
 			if (data == 'success') {
@@ -226,7 +226,7 @@ layui.use('element', function(){
 		  form.on('submit(submit1)', function(data){
 			  var mdata = JSON.stringify(data.field);
 			  var medata = JSON.parse(mdata);
-			$.post('action?action=editplay', {
+			$.post('action.php?action=editplay', {
 				id: medata.id,
 				title: medata.title,
 				cont: medata.cont
@@ -271,7 +271,7 @@ layui.use('element', function(){
 		  form.on('submit(submit2)', function(data){
 			  var mdata = JSON.stringify(data.field);
 			  var medata = JSON.parse(mdata);
-			$.post('action?action=addplay', {
+			$.post('action.php?action=addplay', {
 				title: medata.title,
 				cont: medata.cont
 			}, function(data) {
@@ -323,7 +323,7 @@ layui.use('element', function(){
 		  form.on('submit(submit3)', function(data){
 			  var mdata = JSON.stringify(data.field);
 			  var medata = JSON.parse(mdata);
-			$.post('action?action=adduser', {
+			$.post('action.php?action=adduser', {
 				username: medata.username,
 				password: medata.password,
 				name: medata.name
@@ -378,7 +378,7 @@ layui.use('element', function(){
 		  form.on('submit(submit4)', function(data){
 			  var mdata = JSON.stringify(data.field);
 			  var medata = JSON.parse(mdata);
-			$.post('action?action=addadmin', {
+			$.post('action.php?action=addadmin', {
 				username: medata.username,
 				password: medata.password,
 				name: medata.name
@@ -422,7 +422,7 @@ layui.use('element', function(){
 		  form.on('submit(submit5)', function(data){
 			  var mdata = JSON.stringify(data.field);
 			  var medata = JSON.parse(mdata);
-			$.post('action?action=editpass', {
+			$.post('action.php?action=editpass', {
 				id: medata.id,
 				password: medata.password,
 			}, function(data) {
