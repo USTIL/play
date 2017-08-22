@@ -265,7 +265,7 @@ class mysql {
                 `password` varchar(255) NOT NULL,
                 `name` text NOT NULL,
                 PRIMARY KEY (`id`)
-                ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;";
+                ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;";
             $this->query($sql);
             $sql = "INSERT INTO `admin` VALUES ('1', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'admin');";
             $this->query($sql);
@@ -276,7 +276,7 @@ class mysql {
                   `place` int(10) unsigned NOT NULL,
                   `sh` int(11) NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`)
-                ) ENGINE=MyISAM AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;";
+                ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;";
             $this->query($sql);
             $sql = "CREATE TABLE `plays` (
                   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -284,7 +284,7 @@ class mysql {
                   `cont` text NOT NULL,
                   `time` text NOT NULL,
                   PRIMARY KEY (`id`)
-                ) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;";
+                ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;";
             $this->query($sql);
             $sql = "CREATE TABLE `user` (
                   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -292,7 +292,7 @@ class mysql {
                   `password` varchar(255) NOT NULL,
                   `name` text NOT NULL,
                   PRIMARY KEY (`id`)
-                ) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;";
+                ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;";
             $this->query($sql);
     }
     
