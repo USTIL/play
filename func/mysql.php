@@ -165,10 +165,9 @@ class mysql {
     /**
      * 添加获奖
      */
-    public function addAward($up_id, $user_id) {
+    public function addAward($up_id, $user_id, $place) {
         $sql = "select * from awards where up_id = {$up_id}";
         $rst = $this->query($sql);
-        $place = mysqli_num_rows($rst) + 1;
         $rows = array();
         while ($row = mysqli_fetch_assoc($rst)) {
             $rows[] = $row['user_id'];
@@ -180,6 +179,17 @@ class mysql {
             $this->query($sql);
             return 'success';
         }
+    }
+    /**
+     * 通过审核
+     */
+    public function sh($place, $id) {
+        if ($place == "") {
+            return "placenull";
+        }
+        $sql = "update awards set place = {$place}, sh = 1 where id = {$id}";
+        $this->query($sql);
+        echo "success";
     }
     /**
      * 删除一个获奖

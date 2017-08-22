@@ -3,7 +3,7 @@ if (is_file('../playconf.php')) {
     session_start();
     $_SESSION['url'] = array(
         '0' => 'admin',
-        '1' => 'index'
+        '1' => 'playaward'
     );
     header('location: ../');
 } else if (!isset($_SESSION['admin_id'])) {
@@ -11,7 +11,8 @@ if (is_file('../playconf.php')) {
 } else if ($_SESSION['admin_id'] == "") {
     header("location: ./admin/login.php");
 }
-$sql = "select * from plays order by id";
+$adminuserid = $_SESSION['adminuserid'];
+$sql = "select * from awards where user_id = {$adminuserid} and sh = 1 order by place";
 $rst = $mysql->query($sql);
 $rows = $mysql->fetchAll($rst);
 ?>
@@ -20,7 +21,7 @@ $rows = $mysql->fetchAll($rst);
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>后台 - 比赛管理</title>
+<title>后台 - 比赛获奖消息</title>
 </head>
 <script type="text/javascript" src="./js/jquery-3.2.1.min.js"></script>
 <script type="text/javascript" src="./js/layui/layui.js"></script>
@@ -28,7 +29,7 @@ $rows = $mysql->fetchAll($rst);
 <body>
 <div class="layui-layout layui-layout-admin">
   <div class="layui-header">
-    <div class="layui-logo">后台 - 比赛管理</div>
+    <div class="layui-logo">后台 - 比赛获奖消息</div>
     <!-- 头部区域（可配合layui已有的水平导航） -->
     <ul class="layui-nav layui-layout-left">
       <li class="layui-nav-item"><a href="./admin/index.php">比赛管理</a></li>
@@ -67,6 +68,12 @@ $rows = $mysql->fetchAll($rst);
   
   <div class="layui-body">
     <!-- 内容主体区域 -->
+      <blockquote class="layui-elem-quote"><?php 
+      $sql = "select * from user where id = {$adminuserid}";
+      $rst = $mysql->query($sql);
+      $user = $mysql->fetch($rst);
+      echo $user['name'];
+      ?></blockquote>
 	  <table id="table1" lay-filter="table1"></table>
 	<script>
 	layui.use(['table','layer'], function(){
@@ -74,25 +81,29 @@ $rows = $mysql->fetchAll($rst);
 	  layer = layui.layer;
 		var dwidth = $(document).width()-210;
 		var idwidth = dwidth*0.1;
-		var titlewidth = dwidth*0.18;
-		var contwidth = dwidth*0.27;
-		var timewidth = dwidth*0.18;
-		var actionwidth = dwidth*0.27;
+		var titlewidth = dwidth*0.3;
+		var contwidth = dwidth*0.4;
+		var actionwidth = dwidth*0.1;
+		var acwidth = dwidth*0.1;
 		table.render({
 			elem: '#table1',
 			cols:  [[
 				{field: 'id', title: 'ID', width: idwidth, align:'center'}
-				,{field: 'title', title: '标题', width: titlewidth, align:'center'}
-				,{field: 'cont', title: '简介', width: contwidth, align:'center'}
-				,{field: 'time', title: '时间', width: timewidth, align:'center'}
-				,{fixed: 'right', field: 'action', title: '操作', width: actionwidth, align:'center', toolbar: '#barDemo'}
+				,{field: 'title', title: '比赛标题', width: titlewidth, align:'center'}
+				,{field: 'cont', title: '比赛简介', width: contwidth, align:'center'}
+				,{field: 'place', title: '获奖名次', width: actionwidth, align:'center'}
+				,{fixed: 'right', field: 'action', title: '操作', width: acwidth, align:'center', toolbar: '#barDemo'}
 			  ]],
-			data  :[<?php foreach ($rows as $row) {?>
+			data  :[<?php foreach ($rows as $row) {
+			     $sql = "select * from plays where id = {$row['up_id']}";
+			     $rst = $mysql->query($sql);
+			     $play = $mysql->fetch($rst);
+			    ?>
 				{
 			"id":"<?php echo $row['id'];?>",
-			"title":"<?php echo $row['title'];?>",
-			"cont":"<?php echo $row['cont'];?>",
-			"time":"<?php echo $row['time'];?>",
+			"title":"<?php echo $play['title'];?>",
+			"cont":"<?php echo $play['cont'];?>",
+			"place":"<?php echo $row['place'];?>",
 			},<?php }?>
 			],
 		});
@@ -101,35 +112,17 @@ $rows = $mysql->fetchAll($rst);
 		  var layEvent = obj.event; //获得 lay-event 对应的值
 		  var tr = obj.tr; //获得当前行 tr 的DOM对象
 			
-			if (layEvent == 'detail') { //查看
-				$.post('action?action=adminaward', {
+			if (layEvent == 'del') { //删除 
+				layer.confirm('确定要删除“'+data.title+'”的获奖信息吗？',{title: '提示'}, function(index){
+					$.post('action?action=deleteaward', {
 					id: data.id
 					}, function(data) {
 						if (data == 'success') {
 							location.reload();
 						}
 					});
-			} else if(layEvent === 'del'){ //删除
-			layer.confirm('删除一个比赛就会删除这个比赛的所有获奖信息，确定要删除比赛“'+data.title+'”吗？',{title: '提示'}, function(index){
-				$.post('action?action=deleteplay', {
-				id: data.id
-				}, function(data) {
-					if (data == 'success') {
-						location.reload();
-					}
 				});
-			});
-		  } else if(layEvent === 'edit'){ //编辑
-			  $('#idme').val(data.id);
-			  $('#titleme').val(data.title);
-			  $('#contme').html(data.cont);
-			layer.open({
-			  type: 1,
-			  title: '编辑比赛信息',
-			  area: ['600px', '320px'],
-			  content: $('#editme')
-			});
-		  }
+			}
 		});
 	});
 	</script>
@@ -194,56 +187,9 @@ layui.use('element', function(){
 	}
 </script>
 <script type="text/html" id="barDemo">
-	<a class="layui-btn layui-btn-mini" lay-event="detail">查看</a>
- 	<a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
- 	<a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
+	<a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
 </script>
-<div id="editme" style="width: 90%; display: none; margin: 10px auto 0">
-	<form class="layui-form layui-form-pane" action="">
-		<input id="idme" name="id" style="display: none" type="text" />
-		<div class="layui-form-item">
-			<label class="layui-form-label">标题</label>
-			<div class="layui-input-block">
-				<input type="text" id="titleme" name="title" placeholder="请输入标题" autocomplete="off" class="layui-input">
-			</div>
-		</div>
-		<div class="layui-form-item layui-form-text">
-			<label class="layui-form-label">简介</label>
-			<div class="layui-input-block">
-			  <textarea placeholder="请输入简介" id="contme" name="cont" class="layui-textarea"></textarea>
-			</div>
-		</div>
-		<div class="layui-form-item">
-			<button style="width: 100%" class="layui-btn" lay-submit="" lay-filter="submit1">确认修改</button>
-		</div>
-	</form>
-	<script>
-		layui.use(['form', 'layer'], function(){
-		  var form = layui.form
-		  ,layer = layui.layer;
 
-		  //监听提交
-		  form.on('submit(submit1)', function(data){
-			  var mdata = JSON.stringify(data.field);
-			  var medata = JSON.parse(mdata);
-			$.post('action?action=editplay', {
-				id: medata.id,
-				title: medata.title,
-				cont: medata.cont
-			}, function(data) {
-				if (data == 'success') {
-					location.reload();
-				} else if (data == 'titlenull') {
-					layer.msg('标题不能为空', {icon:2});
-				} else if (data == 'contnull') {
-					layer.msg('简介不能为空', {icon:2});
-				}
-			});
-			return false;
-		  });
-		});
-	</script>
-</div>
 <div id="addplay" style="width: 90%; display: none; margin: 10px auto 0">
 	<form class="layui-form layui-form-pane" action="">
 		<div class="layui-form-item">

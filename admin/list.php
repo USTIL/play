@@ -112,7 +112,14 @@ $rows = $mysql->fetchAll($rst);
 		  var tr = obj.tr; //获得当前行 tr 的DOM对象
 			
 			if (layEvent == 'detail') { //查看
-				
+				$('#idme').val(data.id);
+				$('#placeme').val(data.place);
+				layer.open({
+					  type: 1,
+					  title: '通过“'+data.name+'”的审核',
+					  area: ['300px', '170px'],
+					  content: $('#editme')
+					});
 			}
 		});
 	});
@@ -184,19 +191,13 @@ layui.use('element', function(){
 	<form class="layui-form layui-form-pane" action="">
 		<input id="idme" name="id" style="display: none" type="text" />
 		<div class="layui-form-item">
-			<label class="layui-form-label">标题</label>
+			<label class="layui-form-label">获奖名次</label>
 			<div class="layui-input-block">
-				<input type="text" id="titleme" name="title" placeholder="请输入标题" autocomplete="off" class="layui-input">
-			</div>
-		</div>
-		<div class="layui-form-item layui-form-text">
-			<label class="layui-form-label">简介</label>
-			<div class="layui-input-block">
-			  <textarea placeholder="请输入简介" id="contme" name="cont" class="layui-textarea"></textarea>
+				<input type="text" id="placeme" name="place" placeholder="获奖名次" autocomplete="off" class="layui-input">
 			</div>
 		</div>
 		<div class="layui-form-item">
-			<button style="width: 100%" class="layui-btn" lay-submit="" lay-filter="submit1">确认修改</button>
+			<button style="width: 100%" class="layui-btn" lay-submit="" lay-filter="submit1">通过</button>
 		</div>
 	</form>
 	<script>
@@ -208,17 +209,14 @@ layui.use('element', function(){
 		  form.on('submit(submit1)', function(data){
 			  var mdata = JSON.stringify(data.field);
 			  var medata = JSON.parse(mdata);
-			$.post('action?action=editplay', {
+			$.post('action?action=sh', {
 				id: medata.id,
-				title: medata.title,
-				cont: medata.cont
+				place: medata.place
 			}, function(data) {
 				if (data == 'success') {
 					location.reload();
-				} else if (data == 'titlenull') {
-					layer.msg('标题不能为空', {icon:2});
-				} else if (data == 'contnull') {
-					layer.msg('简介不能为空', {icon:2});
+				} else if (data == 'placenull') {
+					layer.msg('获奖名次不能为空', {icon:2});
 				}
 			});
 			return false;

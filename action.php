@@ -177,6 +177,25 @@ if (isset($_GET['action'])) {
                 echo $return;
             }
         }
+    } else if ($action == 'sh') { //通过审核
+        $id = $_POST['id'];
+        $place = $_POST['place'];
+        $return = $mysql->sh($place, $id);
+        echo $return;
+    } else if ($action == 'adminaward') { //后台显示获奖信息
+        $_SESSION['adminplayid'] = $_POST['id'];
+        $_SESSION['url'] = array(
+            '0' => 'admin',
+            '1' => 'playaward'
+        );
+        echo "success";
+    } else if ($action == 'uadminaward') { //后台显示获奖信息
+        $_SESSION['adminuserid'] = $_POST['id'];
+        $_SESSION['url'] = array(
+            '0' => 'admin',
+            '1' => 'uplayaward'
+        );
+        echo "success";
     }
     
 }

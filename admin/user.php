@@ -99,7 +99,13 @@ $rows = $mysql->fetchAll($rst);
 		  var tr = obj.tr; //获得当前行 tr 的DOM对象
 			
 			if (layEvent == 'detail') { //查看
-				
+				$.post('action?action=uadminaward', {
+					id: data.id
+					}, function(data) {
+						if (data == 'success') {
+							location.reload();
+						}
+					});
 			} else if(layEvent === 'del'){ //删除
 			layer.confirm('删除一个用户就会删除这个用户的所有信息，确定要删除用户“'+data.name+'”吗？',{title: '提示'}, function(index){
 				$.post('action?action=deleteuser', {
@@ -118,7 +124,7 @@ $rows = $mysql->fetchAll($rst);
 			layer.open({
 			  type: 1,
 			  title: '编辑用户信息',
-			  area: ['600px', '320px'],
+			  area: ['400px', '280px'],
 			  content: $('#editme')
 			});
 		  }
