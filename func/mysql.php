@@ -259,10 +259,6 @@ class mysql {
      * 创建表
      */
     public function createTable() {
-        $sql = "SHOW TABLES";
-        $rst = $this->query($sql);
-        $tables = $this->fetchAll($rst);
-        if (!in_array('admin', $tables)) {
             $sql = "CREATE TABLE `admin` (
                 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
                 `username` varchar(255) NOT NULL,
@@ -273,8 +269,6 @@ class mysql {
             $this->query($sql);
             $sql = "INSERT INTO `admin` VALUES ('1', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'admin');";
             $this->query($sql);
-        }
-        if (!in_array('awards', $tables)) {
             $sql = "CREATE TABLE `awards` (
                   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
                   `up_id` int(10) unsigned NOT NULL,
@@ -284,8 +278,6 @@ class mysql {
                   PRIMARY KEY (`id`)
                 ) ENGINE=MyISAM AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;";
             $this->query($sql);
-        }
-        if (!in_array('plays', $tables)) {
             $sql = "CREATE TABLE `plays` (
                   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
                   `title` text NOT NULL,
@@ -294,8 +286,6 @@ class mysql {
                   PRIMARY KEY (`id`)
                 ) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;";
             $this->query($sql);
-        }
-        if (!in_array('user', $tables)) {
             $sql = "CREATE TABLE `user` (
                   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
                   `username` varchar(255) NOT NULL,
@@ -304,7 +294,6 @@ class mysql {
                   PRIMARY KEY (`id`)
                 ) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;";
             $this->query($sql);
-        }
     }
     
 }

@@ -2,6 +2,6 @@
 return array(
     'HOST'     => 'localhost',
     'USERNAME' => 'root',
-    'PASSWORD' => '',
+    'PASSWORD' => 'root',
     'DBNAME'   => '',
 );
