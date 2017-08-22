@@ -174,6 +174,8 @@ class mysql {
         }
         if (in_array($user_id, $rows)) {
             return 'error';
+        } else if ($place == "") {
+            return 'placenull';
         } else {
             $sql = "insert into awards(up_id,user_id,place) values({$up_id},{$user_id},{$place})";
             $this->query($sql);
@@ -254,20 +256,53 @@ class mysql {
         return 'success';
     }
     /**
-     * 创建URL表
+     * 创建表
      */
-    public function createURLDB() {
+    public function createTable() {
         $sql = "SHOW TABLES";
         $rst = $this->query($sql);
         $tables = $this->fetchAll($rst);
-        if (!in_array('url', $tables)) {
-            $sql = "CREATE TABLE `url` (
-                      `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-                      `url` varchar(255) NOT NULL,
-                      PRIMARY KEY (`id`)
-                    ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;";
+        if (!in_array('admin', $tables)) {
+            $sql = "CREATE TABLE `admin` (
+                `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                `username` varchar(255) NOT NULL,
+                `password` varchar(255) NOT NULL,
+                `name` text NOT NULL,
+                PRIMARY KEY (`id`)
+                ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;";
             $this->query($sql);
-            $sql = "INSERT INTO `url` VALUES ('1', 'index');";
+            $sql = "INSERT INTO `admin` VALUES ('1', 'admin', '21232f297a57a5a743894a0e4a801fc3', 'admin');";
+            $this->query($sql);
+        }
+        if (!in_array('awards', $tables)) {
+            $sql = "CREATE TABLE `awards` (
+                  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                  `up_id` int(10) unsigned NOT NULL,
+                  `user_id` int(10) unsigned NOT NULL,
+                  `place` int(10) unsigned NOT NULL,
+                  `sh` int(11) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`)
+                ) ENGINE=MyISAM AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;";
+            $this->query($sql);
+        }
+        if (!in_array('plays', $tables)) {
+            $sql = "CREATE TABLE `plays` (
+                  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                  `title` text NOT NULL,
+                  `cont` text NOT NULL,
+                  `time` text NOT NULL,
+                  PRIMARY KEY (`id`)
+                ) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;";
+            $this->query($sql);
+        }
+        if (!in_array('user', $tables)) {
+            $sql = "CREATE TABLE `user` (
+                  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                  `username` varchar(255) NOT NULL,
+                  `password` varchar(255) NOT NULL,
+                  `name` text NOT NULL,
+                  PRIMARY KEY (`id`)
+                ) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;";
             $this->query($sql);
         }
     }

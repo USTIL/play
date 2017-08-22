@@ -3,7 +3,7 @@ if (is_file('../playconf.php')) {
     session_start();
     $_SESSION['url'] = array(
         '0' => 'index',
-        '1' => 'index'
+        '1' => 'useraward'
     );
     header('location: ../');
 } else {
@@ -14,7 +14,8 @@ if (is_file('../playconf.php')) {
         }
     }
 }
-$sql = "select * from plays order by id";
+$user_id = $_SESSION['user_id'];
+$sql = "select * from awards where user_id = {$user_id} and sh = 1 order by id";
 $rst = $mysql->query($sql);
 $rows = $mysql->fetchAll($rst);
 ?>
@@ -23,7 +24,7 @@ $rows = $mysql->fetchAll($rst);
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>比赛信息</title>
+<title>个人获奖信息</title>
 </head>
 <script type="text/javascript" src="./js/jquery-3.2.1.min.js"></script>
 <script type="text/javascript" src="./js/layui/layui.js"></script>
@@ -32,7 +33,7 @@ $rows = $mysql->fetchAll($rst);
 <div style="width: 100%; margin: 0px auto 0;">
 	<div class="layui-layout layui-layout-admin">
 	  <div class="layui-header">
-		<div class="layui-logo">比赛信息</div>
+		<div class="layui-logo">个人获奖信息</div>
 		<ul class="layui-nav layui-layout-left">
 		  <li class="layui-nav-item"><a href="./index/index.php">比赛信息</a></li>
 		</ul>
@@ -72,25 +73,27 @@ $rows = $mysql->fetchAll($rst);
 	  layer = layui.layer;
 		var dwidth = $(document).width()-10;
 		var idwidth = dwidth*0.1;
-		var titlewidth = dwidth*0.18;
-		var contwidth = dwidth*0.27;
-		var timewidth = dwidth*0.18;
-		var actionwidth = dwidth*0.27;
+		var titlewidth = dwidth*0.2;
+		var contwidth = dwidth*0.5;
+		var timewidth = dwidth*0.2;
 		table.render({
 			elem: '#table1',
 			cols:  [[
 				{field: 'id', title: 'ID', width: idwidth, align:'center'}
-				,{field: 'title', title: '标题', width: titlewidth, align:'center'}
-				,{field: 'cont', title: '简介', width: contwidth, align:'center'}
-				,{field: 'time', title: '时间', width: timewidth, align:'center'}
-				,{fixed: 'right', field: 'action', title: '操作', width: actionwidth, align:'center', toolbar: '#barDemo'}
+				,{field: 'title', title: '比赛标题', width: titlewidth, align:'center'}
+				,{field: 'cont', title: '比赛简介', width: contwidth, align:'center'}
+				,{field: 'place', title: '名次', width: timewidth, align:'center'}
 			  ]],
-				data  :[<?php foreach ($rows as $row) {?>
+				data  :[<?php foreach ($rows as $row) {
+				    $sql = "select * from plays where id = {$row['up_id']}";
+				    $rst = $mysql->query($sql);
+				    $play = $mysql->fetch($rst);
+				    ?>
 					{
 				"id":"<?php echo $row['id'];?>",
-				"title":"<?php echo $row['title'];?>",
-				"cont":"<?php echo $row['cont'];?>",
-				"time":"<?php echo $row['time'];?>",
+				"title":"<?php echo $play['title'];?>",
+				"cont":"<?php echo $play['cont'];?>",
+				"place":"<?php echo $row['place'];?>",
 				},<?php }?>
 				],
 			});

@@ -22,10 +22,23 @@ if (isset($_GET['action'])) {
         echo $return;
     } else if ($action == 'edituser') { //更新用户信息
         $id = $_POST['id'];
-        $username = $_POST['username'];
+        if (isset($_POST['username'])) {
+            $username = $_POST['username'];
+        } else {
+            $sql = "select * from user where id = {$id}";
+            $rst = $mysql->query($sql);
+            $tem = $mysql->fetch($rst);
+            $username = $tem['username'];
+        }
         $password = $_POST['password'];
         $name = $_POST['name'];
+        
         $return = $mysql->editUser($username, $password, $name, $id);
+        if ($return == 'success') {
+            setcookie('user_id','',time()-1);
+            setcookie('user_name','',time()-1);
+            $_SESSION['user_name'] = $name;
+        }
         echo $return;
     } else if ($action == 'getuser') { //获取用户信息
         $id = $_POST['id'];
@@ -71,7 +84,8 @@ if (isset($_GET['action'])) {
     } else if ($action == 'addaward') { //添加获奖
         $up_id = $_POST['up_id'];
         $user_id = $_POST['user_id'];
-        $return = $mysql->addAward($up_id, $user_id);
+        $place = $_POST['place'];
+        $return = $mysql->addAward($up_id, $user_id, $place);
         echo $return;
     } else if ($action == 'deleteaward') { //删除一个获奖
         $id = $_POST['id'];
@@ -98,10 +112,10 @@ if (isset($_GET['action'])) {
                     $_SESSION['user_name'] = $row['name'];
                     echo "success";
                 } else {
-                    echo "passworderror";
+                    echo "passerror";
                 }
             } else {
-                echo "usernameerror";
+                echo "usererror";
             }
         } else {
             echo "error";

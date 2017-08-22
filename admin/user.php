@@ -119,7 +119,6 @@ $rows = $mysql->fetchAll($rst);
 		  } else if(layEvent === 'edit'){ //编辑
 			  $('#idme').val(data.id);
 			  $('#usernameme').val(data.username);
-			  $('#passwordme').val(data.password);
 			  $('#nameme').val(data.name);
 			layer.open({
 			  type: 1,
