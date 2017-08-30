@@ -23,21 +23,21 @@ $rows = $mysql->fetchAll($rst);
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>比赛信息</title>
+<title>获奖展示系统</title>
 </head>
 <script type="text/javascript" src="./js/jquery-3.2.1.min.js"></script>
 <script type="text/javascript" src="./js/layui/layui.js"></script>
 <link rel="stylesheet" type="text/css" href="./js/layui/css/layui.css" />
 <body>
-<div style="width: 100%; margin: 0px auto 0;">
-	<div class="layui-layout layui-layout-admin">
-	  <div class="layui-header">
-		<div class="layui-logo">比赛信息</div>
-		<ul class="layui-nav layui-layout-left">
-		  <li class="layui-nav-item"><a href="./index/index.php">比赛信息</a></li>
-		</ul>
-		<ul class="layui-nav layui-layout-right">
-		<?php 
+<div class="layui-layout layui-layout-admin">
+  <div class="layui-header">
+    <div class="layui-logo">获奖展示系统</div>
+    <!-- 头部区域（可配合layui已有的水平导航） -->
+    <ul class="layui-nav layui-layout-left">
+      <li class="layui-nav-item"><a href="">预留按钮</a></li>
+    </ul>
+    <ul class="layui-nav layui-layout-right">
+      		<?php 
 		if (isset($_SESSION['user_id']) && $_SESSION['user_id'] != "") {
 		    $sql = "select * from user where id = {$_SESSION['user_id']}";
 		    $rst = $mysql->query($sql);
@@ -61,65 +61,54 @@ $rows = $mysql->fetchAll($rst);
 		  <li class="layui-nav-item"><a href="javascript:login()">登录</a></li>
 		  <?php }?>
 		  
-		</ul>
-	  </div>
-	</div>
-	<div style="width: 100%; margin: 0px auto 0">
-		<table id="table1" lay-filter="table1"></table>
-	<script>
-	layui.use(['table','layer'], function(){
-	  var table = layui.table,
-	  layer = layui.layer;
-		var dwidth = $(document).width()-10;
-		var idwidth = dwidth*0.1;
-		var titlewidth = dwidth*0.18;
-		var contwidth = dwidth*0.27;
-		var timewidth = dwidth*0.18;
-		var actionwidth = dwidth*0.27;
-		table.render({
-			elem: '#table1',
-			cols:  [[
-				{field: 'id', title: 'ID', width: idwidth, align:'center'}
-				,{field: 'title', title: '标题', width: titlewidth, align:'center'}
-				,{field: 'cont', title: '简介', width: contwidth, align:'center'}
-				,{field: 'time', title: '时间', width: timewidth, align:'center'}
-				,{fixed: 'right', field: 'action', title: '操作', width: actionwidth, align:'center', toolbar: '#barDemo'}
-			  ]],
-				data  :[<?php foreach ($rows as $row) {?>
-					{
-				"id":"<?php echo $row['id'];?>",
-				"title":"<?php echo $row['title'];?>",
-				"cont":"<?php echo $row['cont'];?>",
-				"time":"<?php echo $row['time'];?>",
-				},<?php }?>
-				],
-			});
-			table.on('tool(table1)', function(obj){
-			  var data = obj.data; //获得当前行数据
-			  var layEvent = obj.event; //获得 lay-event 对应的值
-			  var tr = obj.tr; //获得当前行 tr 的DOM对象
-
-				if (layEvent == 'detail') { //查看
-					$.post('action.php?action=showaward', {
-						id: data.id
-						}, function(data) {
-							if (data == 'success') {
-								location.reload();
-							}
-						});
-				}
-			});
-		});
-		</script>
-	</div>
+    </ul>
+  </div>
+  
+  <div class="layui-side layui-bg-black">
+    <div class="layui-side-scroll">
+      <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+      <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+        <li class="layui-nav-item">
+          <a class="" href="javascript:;">2015级比赛获奖</a>
+          <dl class="layui-nav-child">
+            <dd><a href="">第十一届ACM校赛</a></dd>
+            <dd><a href="">第十二届ACM校赛</a></dd>
+            <dd><a href="">第十三届ACM校赛</a></dd>
+          </dl>
+        </li>
+        <li class="layui-nav-item">
+          <a class="" href="javascript:;">2016级比赛获奖</a>
+          <dl class="layui-nav-child">
+            <dd><a href="">第十二届ACM校赛新生赛</a></dd>
+			<dd><a href="">第十三届ACM校赛</a></dd>
+          </dl>
+        </li>
+        <li class="layui-nav-item">
+          <a class="" href="javascript:;">2017级比赛获奖</a>
+          <dl class="layui-nav-child">
+            <dd><a href="">第十四届ACM校赛新生赛</a></dd>
+          </dl>
+        </li>
+      </ul>
+    </div>
+  </div>
+  
+  <div class="layui-body">
+    <!-- 内容主体区域 -->
+	  
+  </div>
+  
+  <div class="layui-footer">
+    <!-- 底部固定区域 -->
+    © 2017 获奖展示系统
+  </div>
 </div>
-<script type="text/html" id="barDemo">
-	<a class="layui-btn layui-btn-mini" lay-event="detail">查看详细信息</a>
-</script>
+
 <script>
-layui.use(['element','layer'], function(){
+//JavaScript代码区域
+layui.use('element', function(){
   var element = layui.element;
-  var layer = layui.layer;
+  
 });
 </script>
 <script type="text/javascript">

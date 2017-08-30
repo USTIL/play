@@ -47,14 +47,32 @@ if (isset($_GET['action'])) {
     } else if ($action == 'addplay') { //添加一个比赛
         $title = $_POST['title'];
         $cont = $_POST['cont'];
-        $return = $mysql->addPlay($title, $cont);
-        echo $return;
+        $year = $_POST['year'];
+        $month = $_POST['month'];
+        $day = $_POST['day'];
+        if ($year == "" || $month == "" || $day == "") {
+            echo "datenull";
+        } else {
+            $gdate = $year.'-'.$month.'-'.$day;
+            $date = strtotime($gdate);
+            $return = $mysql->addPlay($title, $cont, $date);
+            echo $return;
+        }
     } else if ($action == 'editplay') { //更新比赛信息
         $id = $_POST['id'];
         $title = $_POST['title'];
         $cont = $_POST['cont'];
-        $return = $mysql->editPlay($title, $cont, $id);
-        echo $return;
+        $year = $_POST['year'];
+        $month = $_POST['month'];
+        $day = $_POST['day'];
+        if ($year == "" || $month == "" || $day == "") {
+            echo "datenull";
+        } else {
+            $gdate = $year.'-'.$month.'-'.$day;
+            $date = strtotime($gdate);
+            $return = $mysql->editPlay($title, $cont, $date, $id);
+            echo $return;
+        }
     } else if ($action == 'getplay') { //获取比赛信息
         $id = $_POST['id'];
         $row = $mysql->getPlay($id);

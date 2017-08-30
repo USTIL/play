@@ -102,7 +102,7 @@ class mysql {
     /**
      * 添加一个比赛
      */
-    public function addPlay($title, $cont) {
+    public function addPlay($title, $cont, $date) {
         if ($title == "") {
             return 'titlenull';
         }
@@ -114,8 +114,7 @@ class mysql {
         if ($row = $this->fetch($rst)) {
             return 'playhave';
         } else {
-            $time = date("Y-m-d H:i:s");
-            $sql = "insert into plays(title,cont,time) values('{$title}','{$cont}','{$time}')";
+            $sql = "insert into plays(title,cont,date) values('{$title}','{$cont}','{$date}')";
             $this->query($sql);
             return 'success';
         }
@@ -123,14 +122,14 @@ class mysql {
     /**
      * 更新比赛信息
      */
-    public function editPlay($title, $cont, $id) {
+    public function editPlay($title, $cont, $date, $id) {
         if ($title == "") {
             return 'titlenull';
         }
         if ($cont == "") {
             return 'contnull';
         }
-        $sql = "update plays set title = '{$title}', cont = '{$cont}' where id = {$id}";
+        $sql = "update plays set title = '{$title}', cont = '{$cont}', date = '{$date}' where id = {$id}";
         $this->query($sql);
         return 'success';
     }
@@ -144,7 +143,7 @@ class mysql {
         return $row;
     }
     /**
-     * 得到全部比赛信息
+     * 得到全部比赛
      */
     public function getAllPlay() {
         $sql = "select * from plays";
@@ -165,7 +164,7 @@ class mysql {
     /**
      * 添加获奖
      */
-    public function addAward($up_id, $user_id, $place) {
+    public function addAward($up_id, $user_id, $place, $member) {
         $sql = "select * from awards where up_id = {$up_id}";
         $rst = $this->query($sql);
         $rows = array();
@@ -176,6 +175,8 @@ class mysql {
             return 'error';
         } else if ($place == "") {
             return 'placenull';
+        } else if ($member == "") {
+            return 'membernull';
         } else {
             $sql = "insert into awards(up_id,user_id,place) values({$up_id},{$user_id},{$place})";
             $this->query($sql);

@@ -84,7 +84,7 @@ $rows = $mysql->fetchAll($rst);
 				{field: 'id', title: 'ID', width: idwidth, align:'center'}
 				,{field: 'title', title: '标题', width: titlewidth, align:'center'}
 				,{field: 'cont', title: '简介', width: contwidth, align:'center'}
-				,{field: 'time', title: '时间', width: timewidth, align:'center'}
+				,{field: 'date', title: '日期', width: timewidth, align:'center'}
 				,{fixed: 'right', field: 'action', title: '操作', width: actionwidth, align:'center', toolbar: '#barDemo'}
 			  ]],
 			data  :[<?php foreach ($rows as $row) {?>
@@ -92,7 +92,13 @@ $rows = $mysql->fetchAll($rst);
 			"id":"<?php echo $row['id'];?>",
 			"title":"<?php echo $row['title'];?>",
 			"cont":"<?php echo $row['cont'];?>",
-			"time":"<?php echo $row['time'];?>",
+			<?php $gdate = date("Y-m-d", $row['date']);?>
+			"date":"<?php echo $gdate;?>",
+			<?php $gdate = date("Y-n-j", $row['date']);
+			$ymd = explode("-", $gdate);?>
+			"year":"<?php echo $ymd['0'];?>",
+			"month":"<?php echo $ymd['1'];?>",
+			"day":"<?php echo $ymd['2'];?>",
 			},<?php }?>
 			],
 		});
@@ -123,10 +129,13 @@ $rows = $mysql->fetchAll($rst);
 			  $('#idme').val(data.id);
 			  $('#titleme').val(data.title);
 			  $('#contme').html(data.cont);
+			  $("#sey").find("option[text='"+data.year+"']").attr("selected",true);
+			  $('#sem').val("8");
+			  $('#sed').val("29");
 			layer.open({
 			  type: 1,
 			  title: '编辑比赛信息',
-			  area: ['600px', '320px'],
+			  area: ['690px', '470px'],
 			  content: $('#editme')
 			});
 		  }
@@ -154,7 +163,7 @@ layui.use('element', function(){
 		layer.open({
 			  type: 1,
 			  title: '添加比赛',
-			  area: ['600px', '320px'],
+			  area: ['690px', '470px'],
 			  content: $('#addplay')
 			});
 	}
@@ -210,9 +219,41 @@ layui.use('element', function(){
 		<div class="layui-form-item layui-form-text">
 			<label class="layui-form-label">简介</label>
 			<div class="layui-input-block">
-			  <textarea placeholder="请输入简介" id="contme" name="cont" class="layui-textarea"></textarea>
+			  <textarea placeholder="请输入简介" id="contme" name="cont" class="layui-textarea"  style="height: 200px"></textarea>
 			</div>
 		</div>
+		<div class="layui-form-item">
+            <div class="layui-input-inline">
+              <select name="year" id="sey" >
+                <option value="">请选择年</option>
+                <?php 
+                for ($i = 2013; $i < 2020; $i++) {
+                ?>
+                <option value="<?php echo $i;?>"><?php echo $i;?></option>
+                <?php }?>
+              </select>
+            </div>
+            <div class="layui-input-inline">
+              <select name="month" id="sem">
+                <option value="">请选择月</option>
+                <?php 
+                for ($i = 1; $i < 13; $i++) {
+                ?>
+                <option value="<?php echo $i;?>"><?php echo $i;?></option>
+                <?php }?>
+              </select>
+            </div>
+            <div class="layui-input-inline">
+              <select name="day" id="sed">
+                <option value="">请选择日</option>
+                <?php 
+                for ($i = 1; $i < 32; $i++) {
+                ?>
+                <option value="<?php echo $i;?>"><?php echo $i;?></option>
+                <?php }?>
+              </select>
+            </div>
+          </div>
 		<div class="layui-form-item">
 			<button style="width: 100%" class="layui-btn" lay-submit="" lay-filter="submit1">确认修改</button>
 		</div>
@@ -229,7 +270,10 @@ layui.use('element', function(){
 			$.post('action.php?action=editplay', {
 				id: medata.id,
 				title: medata.title,
-				cont: medata.cont
+				cont: medata.cont,
+				year: medata.year,
+				month: medata.month,
+				day: medata.day,
 			}, function(data) {
 				if (data == 'success') {
 					location.reload();
@@ -237,6 +281,8 @@ layui.use('element', function(){
 					layer.msg('标题不能为空', {icon:2});
 				} else if (data == 'contnull') {
 					layer.msg('简介不能为空', {icon:2});
+				} else if (data == 'datenull') {
+					layer.msg('日期不能为空', {icon:2});
 				}
 			});
 			return false;
@@ -255,9 +301,41 @@ layui.use('element', function(){
 		<div class="layui-form-item layui-form-text">
 			<label class="layui-form-label">简介</label>
 			<div class="layui-input-block">
-			  <textarea placeholder="请输入简介" name="cont" class="layui-textarea"></textarea>
+			  <textarea placeholder="请输入简介" name="cont" class="layui-textarea" style="height: 200px"></textarea>
 			</div>
 		</div>
+		<div class="layui-form-item">
+            <div class="layui-input-inline">
+              <select name="year">
+                <option value="">请选择年</option>
+                <?php 
+                for ($i = 2013; $i < 2020; $i++) {
+                ?>
+                <option value="<?php echo $i;?>"><?php echo $i;?></option>
+                <?php }?>
+              </select>
+            </div>
+            <div class="layui-input-inline">
+              <select name="month">
+                <option value="">请选择月</option>
+                <?php 
+                for ($i = 1; $i < 13; $i++) {
+                ?>
+                <option value="<?php echo $i;?>"><?php echo $i;?></option>
+                <?php }?>
+              </select>
+            </div>
+            <div class="layui-input-inline">
+              <select name="day">
+                <option value="">请选择日</option>
+                <?php 
+                for ($i = 1; $i < 32; $i++) {
+                ?>
+                <option value="<?php echo $i;?>"><?php echo $i;?></option>
+                <?php }?>
+              </select>
+            </div>
+          </div>
 		<div class="layui-form-item">
 			<button style="width: 100%" class="layui-btn" lay-submit="" lay-filter="submit2">确认添加</button>
 		</div>
@@ -273,7 +351,10 @@ layui.use('element', function(){
 			  var medata = JSON.parse(mdata);
 			$.post('action.php?action=addplay', {
 				title: medata.title,
-				cont: medata.cont
+				cont: medata.cont,
+				year: medata.year,
+				month: medata.month,
+				day: medata.day,
 			}, function(data) {
 				if (data == 'success') {
 					location.reload();
@@ -281,6 +362,8 @@ layui.use('element', function(){
 					layer.msg('标题不能为空',  {icon:2});
 				} else if (data == 'contnull') {
 					layer.msg('简介不能为空', {icon:2});
+				} else if (data == 'datenull') {
+					layer.msg('日期不能为空', {icon:2});
 				} else if (data == 'playhave') {
 					layer.msg('同标题比赛已存在', {icon:2});
 				}
