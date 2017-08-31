@@ -33,9 +33,6 @@ $rows = $mysql->fetchAll($rst);
   <div class="layui-header">
     <div class="layui-logo">获奖展示系统</div>
     <!-- 头部区域（可配合layui已有的水平导航） -->
-    <ul class="layui-nav layui-layout-left">
-      <li class="layui-nav-item"><a href="">预留按钮</a></li>
-    </ul>
     <ul class="layui-nav layui-layout-right">
       		<?php 
 		if (isset($_SESSION['user_id']) && $_SESSION['user_id'] != "") {
@@ -49,7 +46,6 @@ $rows = $mysql->fetchAll($rst);
 		    </a>
 		    <dl class="layui-nav-child">
 		    <dd><a href="javascript:edituser(<?php echo $_SESSION['user_id'];?>, '<?php echo $user['username'];?>', '<?php echo $_SESSION['user_name'];?>')">个人信息</a></dd>
-		    <dd><a href="./index/useraward.php">获奖信息</a></dd>
 		    <dd><a href="javascript:userexit()">退出</a></dd>
 		    </dl>
 		    </li>
@@ -131,7 +127,7 @@ layui.use(['element','carousel'], function(){
 		elem: '#car1'
 		,width: dwidth
 		,height: dheight
-		,interval: 1000
+		,interval: 2000
 	  });
 });
 </script>

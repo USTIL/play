@@ -21,7 +21,7 @@ if (isset($_SESSION['user_id'])) {
 $sql = "select * from plays order by id";
 $rst = $mysql->query($sql);
 $rows = $mysql->fetchAll($rst);
-$sql = "select * from awards where up_id = {$up_id} order by id";
+$sql = "select * from awards where up_id = {$up_id} and sh = 1 order by id";
 $rst = $mysql->query($sql);
 $awrows = $mysql->fetchAll($rst);
 ?>
@@ -40,9 +40,11 @@ $awrows = $mysql->fetchAll($rst);
   <div class="layui-header">
     <div class="layui-logo">获奖详情展示</div>
     <!-- 头部区域（可配合layui已有的水平导航） -->
+    <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id']!="") {?>
     <ul class="layui-nav layui-layout-left">
-      <li class="layui-nav-item"><a href="">预留按钮</a></li>
+      <li class="layui-nav-item"><a href="javascript:addaward(<?php echo $up_id.",".$user_id;?>)">添加比赛获奖信息</a></li>
     </ul>
+    <?php }?>
     <ul class="layui-nav layui-layout-right">
       		<?php 
 		if (isset($_SESSION['user_id']) && $_SESSION['user_id'] != "") {
@@ -56,7 +58,6 @@ $awrows = $mysql->fetchAll($rst);
 		    </a>
 		    <dl class="layui-nav-child">
 		    <dd><a href="javascript:edituser(<?php echo $_SESSION['user_id'];?>, '<?php echo $user['username'];?>', '<?php echo $_SESSION['user_name'];?>')">个人信息</a></dd>
-		    <dd><a href="./index/useraward.php">获奖信息</a></dd>
 		    <dd><a href="javascript:userexit()">退出</a></dd>
 		    </dl>
 		    </li>
@@ -122,27 +123,17 @@ $awrows = $mysql->fetchAll($rst);
 	  layer = layui.layer;
 		var dwidth = $(document).width()-200;
 		$('#playbody').css({width:dwidth});
-		var idwidth = dwidth*0.25;
-		var titlewidth = dwidth*0.25;
-		var contwidth = dwidth*0.25;
-		var timewidth = dwidth*0.25;
+		var memwidth = (dwidth-5)*0.6;
+		var placewidth = (dwidth-5)*0.4;
 		table.render({
 			elem: '#table1',
 			cols:  [[
-				{field: 'id', title: 'ID', width: idwidth, align:'center'}
-				,{field: 'username', title: '用户名', width: titlewidth, align:'center'}
-				,{field: 'name', title: '姓名', width: contwidth, align:'center'}
-				,{field: 'place', title: '名次', width: timewidth, align:'center'}
+				{field: 'member', title: '参赛人员', width: memwidth, align:'center'}
+				,{field: 'place', title: '名次', width: placewidth, align:'center'}
 			  ]],
-				data  :[<?php foreach ($awrows as $row) {
-				        $sql = "select * from user where id = {$row['user_id']}";
-				        $rst = $mysql->query($sql);
-				        $user = $mysql->fetch($rst);
-				    ?>
+				data  :[<?php foreach ($awrows as $row) {?>
 					{
-				"id":"<?php echo $row['id'];?>",
-				"username":"<?php echo $user['username'];?>",
-				"name":"<?php echo $user['name'];?>",
+				"member":"<?php echo $row['member'];?>",
 				"place":"<?php echo $row['place'];?>",
 				},<?php }?>
 				],
@@ -190,6 +181,16 @@ layui.use('element', function(){
 				title: '登录',
 				area: ['400px', '220px'],
 				content: $('#login')
+			});
+		}
+		function addaward(upid,userid) {
+			$('#upid').val(upid);
+			$('#userid').val(userid);
+			layer.open({
+				type: 1,
+				title: '添加获奖信息',
+				area: ['400px', '220px'],
+				content: $('#addaward')
 			});
 		}
 		function edituser(id,username,name) {
@@ -353,6 +354,56 @@ layui.use('element', function(){
 					layer.msg('密码不能为空', {icon:2});
 				} else if (data == 'userhave') {
 					layer.msg('该用户名已经被注册',  {icon:2});
+				}
+			});
+			return false;
+		  });
+		});
+	</script>
+</div>
+<div id="addaward" style="width: 90%; display: none; margin: 10px auto 0">
+	<form class="layui-form layui-form-pane" action="">
+	<input id="upid" name="upid" style="display: none" type="text" />
+	<input id="userid" name="userid" style="display: none" type="text" />
+		<div class="layui-form-item">
+			<label class="layui-form-label">获奖人员</label>
+			<div class="layui-input-block">
+				<input type="text" name="member" placeholder="请输入获奖人员" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">获奖名次</label>
+			<div class="layui-input-block">
+				<input type="text" name="place" placeholder="请输入获奖名次" autocomplete="off" class="layui-input">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<button style="width: 100%" class="layui-btn" lay-submit="" lay-filter="submit4">提交审核</button>
+		</div>
+	</form>
+	<script>
+		layui.use(['form', 'layer'], function(){
+		  var form = layui.form
+		  ,layer = layui.layer;
+
+		  //监听提交
+		  form.on('submit(submit4)', function(data){
+			  var mdata = JSON.stringify(data.field);
+			  var medata = JSON.parse(mdata);
+			$.post('action.php?action=addaward', {
+				up_id: medata.upid,
+				user_id: medata.userid,
+				member: medata.member,
+				place: medata.place,
+			}, function(data) {
+				if (data == 'success') {
+					layer.msg('提交成功，亲耐心等待管理员审核', {icon:1});
+				} else if (data == 'memnull') {
+					layer.msg('获奖人员不能为空', {icon:2});
+				} else if (data == 'placenull') {
+					layer.msg('获奖名次不能为空', {icon:2});
+				} else if (data == 'error') {
+					layer.msg('您已经进行过提交，请勿重复提交');
 				}
 			});
 			return false;

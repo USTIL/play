@@ -59,13 +59,10 @@ if (isset($_GET['action'])) {
         $id = $_POST['id'];
         $title = $_POST['title'];
         $cont = $_POST['cont'];
-        $year = $_POST['year'];
-        $month = $_POST['month'];
-        $day = $_POST['day'];
-        if ($year == "" || $month == "" || $day == "") {
+        $gdate = $_POST['date'];
+        if ($gdate == "") {
             echo "datenull";
         } else {
-            $gdate = $year.'-'.$month.'-'.$day;
             $date = strtotime($gdate);
             $return = $mysql->editPlay($title, $cont, $date, $id);
             echo $return;
@@ -81,8 +78,9 @@ if (isset($_GET['action'])) {
     } else if ($action == 'addaward') { //添加获奖
         $up_id = $_POST['up_id'];
         $user_id = $_POST['user_id'];
+        $member = $_POST['member'];
         $place = $_POST['place'];
-        $return = $mysql->addAward($up_id, $user_id, $place);
+        $return = $mysql->addAward($up_id, $user_id, $place, $member);
         echo $return;
     } else if ($action == 'deleteaward') { //删除一个获奖
         $id = $_POST['id'];

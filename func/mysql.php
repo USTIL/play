@@ -167,9 +167,9 @@ class mysql {
         } else if ($place == "") {
             return 'placenull';
         } else if ($member == "") {
-            return 'membernull';
+            return 'memnull';
         } else {
-            $sql = "insert into awards(up_id,user_id,place) values({$up_id},{$user_id},{$place})";
+            $sql = "insert into awards(up_id,user_id,place,member) values({$up_id},{$user_id},{$place},'{$member}')";
             $this->query($sql);
             return 'success';
         }
@@ -267,8 +267,9 @@ class mysql {
                   `user_id` int(10) unsigned NOT NULL,
                   `place` int(10) unsigned NOT NULL,
                   `sh` int(11) NOT NULL DEFAULT '0',
+                  `member` text NOT NULL,
                   PRIMARY KEY (`id`)
-                ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;";
+                ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8";
             $this->query($sql);
             $sql = "CREATE TABLE `plays` (
                   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

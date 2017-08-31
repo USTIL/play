@@ -72,7 +72,7 @@ $rows = $mysql->fetchAll($rst);
 	layui.use(['table','layer'], function(){
 	  var table = layui.table,
 	  layer = layui.layer;
-		var dwidth = $(document).width()-210;
+		var dwidth = $(document).width()-215;
 		var idwidth = dwidth*0.1;
 		var titlewidth = dwidth*0.2;
 		var contwidth = dwidth*0.2;
@@ -84,7 +84,7 @@ $rows = $mysql->fetchAll($rst);
 			cols:  [[
 				{field: 'id', title: 'ID', width: idwidth, align:'center'}
 				,{field: 'username', title: '用户名', width: titlewidth, align:'center'}
-				,{field: 'name', title: '姓名', width: contwidth, align:'center'}
+				,{field: 'name', title: '获奖人员', width: contwidth, align:'center'}
 				,{field: 'title', title: '比赛标题', width: timewidth, align:'center'}
 				,{field: 'place', title: '获奖名次', width: actionwidth, align:'center'}
 				,{fixed: 'right', field: 'action', title: '操作', width: acwidth, align:'center', toolbar: '#barDemo'}
@@ -100,7 +100,7 @@ $rows = $mysql->fetchAll($rst);
 				{
 			"id":"<?php echo $row['id'];?>",
 			"username":"<?php echo $user['username'];?>",
-			"name":"<?php echo $user['name'];?>",
+			"name":"<?php echo $row['member'];?>",
 			"title":"<?php echo $play['title'];?>",
 			"place":"<?php echo $row['place'];?>",
 			},<?php }?>
