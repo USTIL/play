@@ -275,7 +275,7 @@ class mysql {
                   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
                   `title` text NOT NULL,
                   `cont` text NOT NULL,
-                  `time` text NOT NULL,
+                  `date` text NOT NULL,
                   PRIMARY KEY (`id`)
                 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;";
             $this->query($sql);
