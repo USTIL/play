@@ -3,7 +3,7 @@ if (is_file('../playconf.php')) {
     session_start();
     $_SESSION['url'] = array(
         '0' => 'index',
-        '1' => 'index'
+        '1' => 'award'
     );
     header('location: ../');
 } else {
@@ -15,38 +15,36 @@ if (is_file('../playconf.php')) {
     }
 }
 $up_id = $_SESSION['up_id'];
-$user_id = $_SESSION['user_id'];
-$sql = "select * from awards where up_id = {$up_id} and sh = 1 order by place";
+if (isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
+}
+$sql = "select * from plays order by id";
 $rst = $mysql->query($sql);
 $rows = $mysql->fetchAll($rst);
+$sql = "select * from awards where up_id = {$up_id} order by id";
+$rst = $mysql->query($sql);
+$awrows = $mysql->fetchAll($rst);
 ?>
 <!doctype html>
 <html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>比赛获奖信息</title>
+<title>获奖详情展示</title>
 </head>
 <script type="text/javascript" src="./js/jquery-3.2.1.min.js"></script>
 <script type="text/javascript" src="./js/layui/layui.js"></script>
 <link rel="stylesheet" type="text/css" href="./js/layui/css/layui.css" />
 <body>
-<div style="width: 100%; margin: 0px auto 0;">
-	<div class="layui-layout layui-layout-admin">
-	  <div class="layui-header">
-		<div class="layui-logo">比赛获奖信息</div>
-		<ul class="layui-nav layui-layout-left">
-		  <li class="layui-nav-item"><a href="./index/index.php">比赛信息</a></li>
-		  <?php 
-		  if (isset($_SESSION['user_id']) && $_SESSION['user_id'] != "") {
-		      ?>
-		      <li class="layui-nav-item"><a href="javascript:sh(<?php echo $_SESSION['up_id'];?>, <?php echo $_SESSION['user_id'];?>)">添加此比赛获奖</a></li>
-		      <?php
-		  }
-		  ?>
-		</ul>
-		<ul class="layui-nav layui-layout-right">
-		<?php 
+<div class="layui-layout layui-layout-admin">
+  <div class="layui-header">
+    <div class="layui-logo">获奖详情展示</div>
+    <!-- 头部区域（可配合layui已有的水平导航） -->
+    <ul class="layui-nav layui-layout-left">
+      <li class="layui-nav-item"><a href="">预留按钮</a></li>
+    </ul>
+    <ul class="layui-nav layui-layout-right">
+      		<?php 
 		if (isset($_SESSION['user_id']) && $_SESSION['user_id'] != "") {
 		    $sql = "select * from user where id = {$_SESSION['user_id']}";
 		    $rst = $mysql->query($sql);
@@ -70,22 +68,60 @@ $rows = $mysql->fetchAll($rst);
 		  <li class="layui-nav-item"><a href="javascript:login()">登录</a></li>
 		  <?php }?>
 		  
-		</ul>
-	  </div>
-	</div>
-	<div style="width: 100%; margin: 0px auto 0">
-	<blockquote class="layui-elem-quote"><?php 
+    </ul>
+  </div>
+  
+  <div class="layui-side layui-bg-black">
+    <div class="layui-side-scroll">
+      <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+      <ul class="layui-nav layui-nav-tree" lay-filter="test">
+      <?php $ayear = array();
+      foreach ($rows as $row) {
+        $udate = $row['date'];
+        $tdate = date("Y-n-j", $udate);
+        $date = explode("-", $tdate);
+        if (!in_array($date['0'], $ayear)) {
+            array_push($ayear, $date['0']);
+        }
+      }
+      sort($ayear);
+      foreach ($ayear as $nyear) {
+      ?>
+        <li class="layui-nav-item">
+          <a class="" href="javascript:;"><?php echo $nyear;?>年比赛获奖</a>
+          <dl class="layui-nav-child">
+          <?php
+          foreach ($rows as $row) {
+            $date = explode("-", date("Y-n-j", $row['date']));
+            $year = $date['0'];
+            if ($year == $nyear) {
+                echo '<dd><a href="javascript:show('.$row['id'].')">'.$row['title'].'</a></dd>';
+            }
+          }
+          ?>
+          </dl>
+        </li>
+      <?php }?>
+      </ul>
+    </div>
+  </div>
+ <div class="layui-body">
+ <!-- 主体区域 -->
+ <div id="playbody" style="float: right">
+	<blockquote class="layui-elem-quote" id="playtitlt"><?php 
       $sql = "select * from plays where id = {$up_id}";
       $rst = $mysql->query($sql);
       $play = $mysql->fetch($rst);
       echo $play['title'];
       ?></blockquote>
-		<table id="table1" lay-filter="table1"></table>
+	<table id="table1" lay-filter="table1"></table>
 	<script>
+	
 	layui.use(['table','layer'], function(){
 	  var table = layui.table,
 	  layer = layui.layer;
-		var dwidth = $(document).width()-10;
+		var dwidth = $(document).width()-200;
+		$('#playbody').css({width:dwidth});
 		var idwidth = dwidth*0.25;
 		var titlewidth = dwidth*0.25;
 		var contwidth = dwidth*0.25;
@@ -98,7 +134,7 @@ $rows = $mysql->fetchAll($rst);
 				,{field: 'name', title: '姓名', width: contwidth, align:'center'}
 				,{field: 'place', title: '名次', width: timewidth, align:'center'}
 			  ]],
-				data  :[<?php foreach ($rows as $row) {
+				data  :[<?php foreach ($awrows as $row) {
 				        $sql = "select * from user where id = {$row['user_id']}";
 				        $rst = $mysql->query($sql);
 				        $user = $mysql->fetch($rst);
@@ -116,13 +152,30 @@ $rows = $mysql->fetchAll($rst);
 		</script>
 	</div>
 </div>
+  
+  <div class="layui-footer">
+    <!-- 底部固定区域 -->
+    © 2017 获奖展示系统
+  </div>
+</div>
+
 <script>
-layui.use(['element','layer'], function(){
+//JavaScript代码区域
+layui.use('element', function(){
   var element = layui.element;
-  var layer = layui.layer;
+
 });
 </script>
 <script type="text/javascript">
+		function show(id) {
+			$.post('action.php?action=showaward', {
+				id: id
+			}, function(data) {
+				if (data == 'success') {
+					location.reload();
+				}
+			});
+		}
 		function reg() {
 			layer.open({
 				type: 1,
@@ -147,16 +200,6 @@ layui.use(['element','layer'], function(){
 				title: '个人资料',
 				area: ['400px', '220px'],
 				content: $('#editme')
-			});
-		}
-		function sh(upid,userid) {
-			$('#upid').val(upid);
-			$('#userid').val(userid);
-			layer.open({
-				type: 1,
-				title: '提交获奖审核',
-				area: ['400px', '170px'],
-				content: $('#sh')
 			});
 		}
 		function userexit() {
@@ -207,6 +250,8 @@ layui.use(['element','layer'], function(){
 					location.reload();
 				} else if (data == 'namenull') {
 					layer.msg('姓名不能为空', {icon:2});
+				} else if (data == 'usernull') {
+					layer.msg('用户名不能为空', {icon:2});
 				}
 			});
 			return false;
@@ -308,47 +353,6 @@ layui.use(['element','layer'], function(){
 					layer.msg('密码不能为空', {icon:2});
 				} else if (data == 'userhave') {
 					layer.msg('该用户名已经被注册',  {icon:2});
-				}
-			});
-			return false;
-		  });
-		});
-	</script>
-</div>
-<div id="sh" style="width: 90%; display: none; margin: 10px auto 0">
-	<form class="layui-form layui-form-pane" action="">
-		<input id="upid" name="upid" style="display: none" type="text" />
-		<input id="userid" name="userid" style="display: none" type="text" />
-		<div class="layui-form-item">
-			<label class="layui-form-label">获奖名次</label>
-			<div class="layui-input-block">
-				<input type="text" id="placeme" name="place" placeholder="获奖名次" autocomplete="off" class="layui-input">
-			</div>
-		</div>
-		<div class="layui-form-item">
-			<button style="width: 100%" class="layui-btn" lay-submit="" lay-filter="submit5">提交</button>
-		</div>
-	</form>
-	<script>
-		layui.use(['form', 'layer'], function(){
-		  var form = layui.form
-		  ,layer = layui.layer;
-
-		  //监听提交
-		  form.on('submit(submit5)', function(data){
-			  var mdata = JSON.stringify(data.field);
-			  var medata = JSON.parse(mdata);
-			$.post('action.php?action=addaward', {
-				up_id: medata.upid,
-				user_id: medata.userid,
-				place: medata.place
-			}, function(data) {
-				if (data == 'success') {
-					layer.msg('提交成功，请等待管理员审核', {icon:1});
-				} else if (data == 'error') {
-					layer.msg('您已提交过审核，请勿重复提交');
-				}  else if (data == 'placenull') {
-					layer.msg('名次不能为空', {icon:2});
 				}
 			});
 			return false;

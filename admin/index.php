@@ -69,9 +69,11 @@ $rows = $mysql->fetchAll($rst);
     <!-- 内容主体区域 -->
 	  <table id="table1" lay-filter="table1"></table>
 	<script>
-	layui.use(['table','layer'], function(){
+	layui.use(['table','layer','laydate'], function(){
 	  var table = layui.table,
-	  layer = layui.layer;
+	  layer = layui.layer,
+	  laydate = layui.laydate;
+	  
 		var dwidth = $(document).width()-210;
 		var idwidth = dwidth*0.1;
 		var titlewidth = dwidth*0.18;
@@ -93,12 +95,7 @@ $rows = $mysql->fetchAll($rst);
 			"title":"<?php echo $row['title'];?>",
 			"cont":"<?php echo $row['cont'];?>",
 			<?php $gdate = date("Y-m-d", $row['date']);?>
-			"date":"<?php echo $gdate;?>",
-			<?php $gdate = date("Y-n-j", $row['date']);
-			$ymd = explode("-", $gdate);?>
-			"year":"<?php echo $ymd['0'];?>",
-			"month":"<?php echo $ymd['1'];?>",
-			"day":"<?php echo $ymd['2'];?>",
+			"date":"<?php echo $gdate;?>"
 			},<?php }?>
 			],
 		});
@@ -129,13 +126,15 @@ $rows = $mysql->fetchAll($rst);
 			  $('#idme').val(data.id);
 			  $('#titleme').val(data.title);
 			  $('#contme').html(data.cont);
-			  $("#sey").find("option[text='"+data.year+"']").attr("selected",true);
-			  $('#sem').val("8");
-			  $('#sed').val("29");
+			  laydate.render({
+				    elem: '#date2'
+				    ,value: data.date
+				});
+			  $('#date2').val(data.date);
 			layer.open({
 			  type: 1,
 			  title: '编辑比赛信息',
-			  area: ['690px', '470px'],
+			  area: ['690px', '370px'],
 			  content: $('#editme')
 			});
 		  }
@@ -163,7 +162,7 @@ layui.use('element', function(){
 		layer.open({
 			  type: 1,
 			  title: '添加比赛',
-			  area: ['690px', '470px'],
+			  area: ['690px', '370px'],
 			  content: $('#addplay')
 			});
 	}
@@ -219,50 +218,33 @@ layui.use('element', function(){
 		<div class="layui-form-item layui-form-text">
 			<label class="layui-form-label">简介</label>
 			<div class="layui-input-block">
-			  <textarea placeholder="请输入简介" id="contme" name="cont" class="layui-textarea"  style="height: 200px"></textarea>
+			  <textarea placeholder="请输入简介" id="contme" name="cont" class="layui-textarea"></textarea>
 			</div>
 		</div>
 		<div class="layui-form-item">
-            <div class="layui-input-inline">
-              <select name="year" id="sey" >
-                <option value="">请选择年</option>
-                <?php 
-                for ($i = 2013; $i < 2020; $i++) {
-                ?>
-                <option value="<?php echo $i;?>"><?php echo $i;?></option>
-                <?php }?>
-              </select>
-            </div>
-            <div class="layui-input-inline">
-              <select name="month" id="sem">
-                <option value="">请选择月</option>
-                <?php 
-                for ($i = 1; $i < 13; $i++) {
-                ?>
-                <option value="<?php echo $i;?>"><?php echo $i;?></option>
-                <?php }?>
-              </select>
-            </div>
-            <div class="layui-input-inline">
-              <select name="day" id="sed">
-                <option value="">请选择日</option>
-                <?php 
-                for ($i = 1; $i < 32; $i++) {
-                ?>
-                <option value="<?php echo $i;?>"><?php echo $i;?></option>
-                <?php }?>
-              </select>
-            </div>
-          </div>
+            <div class="layui-inline">
+              <label class="layui-form-label">日期</label>
+              <div class="layui-input-inline">
+                <input type="text" name="date" class="layui-input" id="date2" placeholder="请选择日期">
+              </div>
+            </div> 
+        </div>
 		<div class="layui-form-item">
 			<button style="width: 100%" class="layui-btn" lay-submit="" lay-filter="submit1">确认修改</button>
 		</div>
 	</form>
 	<script>
-		layui.use(['form', 'layer'], function(){
+		layui.use(['form', 'layer','laydate'], function(){
 		  var form = layui.form
-		  ,layer = layui.layer;
+		  ,layer = layui.layer
+		  ,laydate = layui.laydate;
 
+		  laydate.render({
+			    elem: '#date2'
+			    ,format: 'yyyy-MM-dd'
+			    ,showBottom: false
+			  });
+		  
 		  //监听提交
 		  form.on('submit(submit1)', function(data){
 			  var mdata = JSON.stringify(data.field);
@@ -271,9 +253,7 @@ layui.use('element', function(){
 				id: medata.id,
 				title: medata.title,
 				cont: medata.cont,
-				year: medata.year,
-				month: medata.month,
-				day: medata.day,
+				date: medata.date
 			}, function(data) {
 				if (data == 'success') {
 					location.reload();
@@ -301,50 +281,33 @@ layui.use('element', function(){
 		<div class="layui-form-item layui-form-text">
 			<label class="layui-form-label">简介</label>
 			<div class="layui-input-block">
-			  <textarea placeholder="请输入简介" name="cont" class="layui-textarea" style="height: 200px"></textarea>
+			  <textarea placeholder="请输入简介" name="cont" class="layui-textarea"></textarea>
 			</div>
 		</div>
 		<div class="layui-form-item">
-            <div class="layui-input-inline">
-              <select name="year">
-                <option value="">请选择年</option>
-                <?php 
-                for ($i = 2013; $i < 2020; $i++) {
-                ?>
-                <option value="<?php echo $i;?>"><?php echo $i;?></option>
-                <?php }?>
-              </select>
-            </div>
-            <div class="layui-input-inline">
-              <select name="month">
-                <option value="">请选择月</option>
-                <?php 
-                for ($i = 1; $i < 13; $i++) {
-                ?>
-                <option value="<?php echo $i;?>"><?php echo $i;?></option>
-                <?php }?>
-              </select>
-            </div>
-            <div class="layui-input-inline">
-              <select name="day">
-                <option value="">请选择日</option>
-                <?php 
-                for ($i = 1; $i < 32; $i++) {
-                ?>
-                <option value="<?php echo $i;?>"><?php echo $i;?></option>
-                <?php }?>
-              </select>
-            </div>
-          </div>
+            <div class="layui-inline">
+              <label class="layui-form-label">日期</label>
+              <div class="layui-input-inline">
+                <input type="text" name="date" class="layui-input" id="date1" placeholder="请选择日期">
+              </div>
+            </div> 
+        </div>
 		<div class="layui-form-item">
 			<button style="width: 100%" class="layui-btn" lay-submit="" lay-filter="submit2">确认添加</button>
 		</div>
 	</form>
 	<script>
-		layui.use(['form', 'layer'], function(){
+		layui.use(['form', 'layer','laydate'], function(){
 		  var form = layui.form
-		  ,layer = layui.layer;
+		  ,layer = layui.layer
+		  ,laydate = layui.laydate;
 
+		  laydate.render({
+			    elem: '#date1'
+			    ,format: 'yyyy-MM-dd'
+			    ,showBottom: false
+			  });
+		  
 		  //监听提交
 		  form.on('submit(submit2)', function(data){
 			  var mdata = JSON.stringify(data.field);
@@ -352,9 +315,7 @@ layui.use('element', function(){
 			$.post('action.php?action=addplay', {
 				title: medata.title,
 				cont: medata.cont,
-				year: medata.year,
-				month: medata.month,
-				day: medata.day,
+				date: medata.date
 			}, function(data) {
 				if (data == 'success') {
 					location.reload();

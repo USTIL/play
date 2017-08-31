@@ -47,13 +47,10 @@ if (isset($_GET['action'])) {
     } else if ($action == 'addplay') { //添加一个比赛
         $title = $_POST['title'];
         $cont = $_POST['cont'];
-        $year = $_POST['year'];
-        $month = $_POST['month'];
-        $day = $_POST['day'];
-        if ($year == "" || $month == "" || $day == "") {
+        $gdate = $_POST['date'];
+        if ($gdate == "") {
             echo "datenull";
         } else {
-            $gdate = $year.'-'.$month.'-'.$day;
             $date = strtotime($gdate);
             $return = $mysql->addPlay($title, $cont, $date);
             echo $return;
@@ -77,24 +74,6 @@ if (isset($_GET['action'])) {
         $id = $_POST['id'];
         $row = $mysql->getPlay($id);
         echo json_encode($row);
-    } else if ($action == 'getallplay') { //获取全部比赛
-        $rows = $mysql->getAllPlay();
-        $sql = "select * from plays";
-        $rst = $mysql->query($sql);
-        $count = mysqli_num_rows($rst);
-        if (isset($rows)) {
-            $ans = array(
-                'code' => 0,
-                'msg'  => "",
-                'count' => $count,
-                'data' => $rows
-            );
-        }
-        if (isset($ans)) {
-            echo json_encode($ans);
-        } else {
-            echo "error";
-        }
     } else if ($action == 'deleteplay') { //删除一个比赛
         $id = $_POST['id'];
         $return = $mysql->deletePlay($id);

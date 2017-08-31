@@ -143,15 +143,6 @@ class mysql {
         return $row;
     }
     /**
-     * 得到全部比赛
-     */
-    public function getAllPlay() {
-        $sql = "select * from plays";
-        $rst = $this->query($sql);
-        $rows = $this->fetchAll($rst);
-        return $rows;
-    }
-    /**
      * 删除一个比赛
      */
     public function deletePlay($id) {

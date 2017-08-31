@@ -67,35 +67,49 @@ $rows = $mysql->fetchAll($rst);
   <div class="layui-side layui-bg-black">
     <div class="layui-side-scroll">
       <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
-      <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+      <ul class="layui-nav layui-nav-tree" lay-filter="test">
+      <?php $ayear = array();
+      foreach ($rows as $row) {
+        $udate = $row['date'];
+        $tdate = date("Y-n-j", $udate);
+        $date = explode("-", $tdate);
+        if (!in_array($date['0'], $ayear)) {
+            array_push($ayear, $date['0']);
+        }
+      }
+      sort($ayear);
+      foreach ($ayear as $nyear) {
+      ?>
         <li class="layui-nav-item">
-          <a class="" href="javascript:;">2015级比赛获奖</a>
+          <a class="" href="javascript:;"><?php echo $nyear;?>年比赛获奖</a>
           <dl class="layui-nav-child">
-            <dd><a href="">第十一届ACM校赛</a></dd>
-            <dd><a href="">第十二届ACM校赛</a></dd>
-            <dd><a href="">第十三届ACM校赛</a></dd>
+          <?php
+          foreach ($rows as $row) {
+            $date = explode("-", date("Y-n-j", $row['date']));
+            $year = $date['0'];
+            if ($year == $nyear) {
+                echo '<dd><a href="javascript:show('.$row['id'].')">'.$row['title'].'</a></dd>';
+            }
+          }
+          ?>
           </dl>
         </li>
-        <li class="layui-nav-item">
-          <a class="" href="javascript:;">2016级比赛获奖</a>
-          <dl class="layui-nav-child">
-            <dd><a href="">第十二届ACM校赛新生赛</a></dd>
-			<dd><a href="">第十三届ACM校赛</a></dd>
-          </dl>
-        </li>
-        <li class="layui-nav-item">
-          <a class="" href="javascript:;">2017级比赛获奖</a>
-          <dl class="layui-nav-child">
-            <dd><a href="">第十四届ACM校赛新生赛</a></dd>
-          </dl>
-        </li>
+      <?php }?>
       </ul>
     </div>
   </div>
   
   <div class="layui-body">
     <!-- 内容主体区域 -->
-	  
+	  <div class="layui-carousel" style="width: 100%; height: 100%;" id="car1">
+      <div carousel-item="">
+        <div><img style="width: 100%; height: 100%;" src="./img/car/1.jpg"></div>
+        <div><img style="width: 100%; height: 100%;" src="./img/car/2.jpg"></div>
+        <div><img style="width: 100%; height: 100%;" src="./img/car/3.jpg"></div>
+        <div><img style="width: 100%; height: 100%;" src="./img/car/4.jpg"></div>
+        <div><img style="width: 100%; height: 100%;" src="./img/car/5.jpg"></div>
+      </div>
+    </div>
   </div>
   
   <div class="layui-footer">
@@ -106,12 +120,31 @@ $rows = $mysql->fetchAll($rst);
 
 <script>
 //JavaScript代码区域
-layui.use('element', function(){
-  var element = layui.element;
+layui.use(['element','carousel'], function(){
+  var element = layui.element
+  ,carousel = layui.carousel;
+
+  var dwidth = $(document).width()-200;
+  var dheight = $(document).height()-105;
   
+  carousel.render({
+		elem: '#car1'
+		,width: dwidth
+		,height: dheight
+		,interval: 1000
+	  });
 });
 </script>
 <script type="text/javascript">
+		function show(id) {
+			$.post('action.php?action=showaward', {
+				id: id
+			}, function(data) {
+				if (data == 'success') {
+					location.reload();
+				}
+			});
+		}
 		function reg() {
 			layer.open({
 				type: 1,
